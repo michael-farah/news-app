@@ -1,19 +1,8 @@
-import { useEffect, useState } from "react";
-import api from "../../api";
 import ArticleCard from "./ArticleCard";
 import { Container, Grid, Typography } from "@mui/material";
 
-function ArticleList() {
-  const [articles, setArticles] = useState([]);
-
-  useEffect(() => {
-    const fetchArticles = async () => {
-      const { data } = await api.getArticles;
-      setArticles(data);
-    };
-
-    fetchArticles();
-  }, []);
+function ArticleList({articles}) {
+  
 
   return (
     <Container>
