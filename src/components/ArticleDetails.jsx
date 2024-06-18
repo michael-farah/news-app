@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,11 +9,20 @@ import {
   Grid,
   Stack,
   Button,
+  Collapse,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CommentsSection from "./CommentsSection";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 
-function ArticleDetails({ article, votes, handleVote }) {
+function ArticleDetails({ article, votes, handleVote, comments }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
   return (
     <Grid
       container
@@ -70,6 +80,20 @@ function ArticleDetails({ article, votes, handleVote }) {
               </IconButton>
             </CardActions>
           </Stack>
+          <CardActions>
+            <Button
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show comments"
+            >
+              <ExpandMoreIcon /> {expanded ? "Hide" : "Show"} Comments
+            </Button>
+          </CardActions>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent>
+              <CommentsSection comments={comments} />
+            </CardContent>
+          </Collapse>
         </Card>
       </Grid>
     </Grid>

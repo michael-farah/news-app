@@ -7,5 +7,6 @@ const api = axios.create({
 export default {
   getArticles: () => api.get("/articles"),
   getArticle: (id) => api.get(`/articles/${id}`),
+  getCommentsByArticleId: (id) => api.get(`/articles/${id}/comments`),
   patchVotes: (id, votes) => api.patch(`/articles/${id}`, { inc_votes: votes }),
 };
