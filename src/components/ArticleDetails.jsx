@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useLoaderData, useLocation } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import api from "../../api";
 import {
   Card,
   CardContent,
@@ -17,25 +20,35 @@ import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import CommentsSection from "./CommentsSection";
 import CommentForm from "./CommentForm";
 
-function ArticleDetails({
-  article,
-  votes,
-  handleVote,
-  comments,
-  setComments,
-}) {
+function ArticleDetails() {
   const [expanded, setExpanded] = useState(false);
+  const { article, comments: initialComments } = useLoaderData();
+  const { state } = useLocation();
+  const [votes, setVotes] = useState(state?.votes || article.votes);
+  const [comments, setComments] = useState(initialComments);
+
+  const handleVote = async (increment) => {
+    setVotes((prevVotes) => prevVotes + increment);
+    try {
+      await api.patchVotes(article.article_id, increment);
+    } catch (err) {
+      console.error("Error updating votes:", err);
+      setVotes((prevVotes) => prevVotes - increment);
+    }
+  };
+
+  const handleCommentPosted = (newComment) => {
+    if (newComment) {
+      setComments((prevComments) => [newComment, ...prevComments]);
+    }
+  };
+
+  if (!article) {
+    return <CircularProgress aria-busy aria-label="Loading" />;
+  }
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
-  };
-
-  const handleCommentPosted = (newComment, revertComment) => {
-    if (newComment) {
-      setComments((prevComments) => [newComment, ...prevComments]);
-    } else if (revertComment) {
-      setComments((prevComments) => prevComments.filter(comment => comment !== revertComment));
-    }
   };
 
   return (
@@ -44,13 +57,12 @@ function ArticleDetails({
       spacing={0}
       direction="column"
       alignItems="center"
-      justify="center"
       sx={{ minHeight: "100vh", mr: 2, mt: 2 }}
     >
       <Grid item xs={3}>
         <Card sx={{ maxWidth: 1000 }}>
           <CardContent>
-            <Typography sx={{ mb: 4 }} variant="h4" textAlign={"center"}>
+            <Typography sx={{ mb: 4 }} variant="h4" textAlign="center">
               {article.title}
             </Typography>
             <Button sx={{ mb: 1 }} variant="contained" size="small">
@@ -73,24 +85,18 @@ function ArticleDetails({
               {article.body}
             </Typography>
           </CardContent>
-          <Stack alignItems={"center"}>
+          <Stack alignItems="center">
             <Typography variant="body2" color="text.secondary">
-              Votes: {votes[article.article_id]}
+              Votes: {votes}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Comments: {article.comment_count}
+              Comments: {comments.length}
             </Typography>
             <CardActions>
-              <IconButton
-                aria-label="like"
-                onClick={() => handleVote(article.article_id, 1)}
-              >
+              <IconButton aria-label="like" onClick={() => handleVote(1)}>
                 <FavoriteIcon />
               </IconButton>
-              <IconButton
-                aria-label="dislike"
-                onClick={() => handleVote(article.article_id, -1)}
-              >
+              <IconButton aria-label="dislike" onClick={() => handleVote(-1)}>
                 <ThumbDownAltIcon />
               </IconButton>
             </CardActions>
@@ -106,7 +112,10 @@ function ArticleDetails({
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <CommentForm articleId={article.article_id} onCommentPosted={handleCommentPosted} />
+              <CommentForm
+                articleId={article.article_id}
+                onCommentPosted={handleCommentPosted}
+              />
               <CommentsSection comments={comments} />
             </CardContent>
           </Collapse>

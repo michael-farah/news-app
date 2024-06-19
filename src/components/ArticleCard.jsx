@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,13 +11,27 @@ import {
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
+import api from "../../api";
 
-function ArticleCard({ article, votes, handleVote }) {
+function ArticleCard({ article }) {
+  const [votes, setVotes] = useState(article.votes);
+
+  const handleVote = async (increment) => {
+    setVotes((prevVotes) => prevVotes + increment);
+    try {
+      await api.patchVotes(article.article_id, increment);
+    } catch (err) {
+      console.error("Error updating votes:", err);
+      setVotes((prevVotes) => prevVotes - increment);
+    }
+  };
+
   return (
     <Card sx={{ maxWidth: 345, m: 2 }}>
       <ButtonBase
         component={Link}
         to={`/articles/${article.article_id}`}
+        state={{ votes }}
         sx={{ display: "flex", flexDirection: "column" }}
       >
         <CardMedia
@@ -27,7 +42,7 @@ function ArticleCard({ article, votes, handleVote }) {
           sx={{ width: "100%" }}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="h5">
             {article.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -41,21 +56,15 @@ function ArticleCard({ article, votes, handleVote }) {
             Comments: {article.comment_count}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Votes: {votes[article.article_id]}
+            Votes: {votes}
           </Typography>
         </CardContent>
       </ButtonBase>
       <CardActions disableSpacing>
-        <IconButton
-          aria-label="like"
-          onClick={() => handleVote(article.article_id, 1)}
-        >
+        <IconButton aria-label="like" onClick={() => handleVote(1)}>
           <FavoriteIcon />
         </IconButton>
-        <IconButton
-          aria-label="dislike"
-          onClick={() => handleVote(article.article_id, -1)}
-        >
+        <IconButton aria-label="dislike" onClick={() => handleVote(-1)}>
           <ThumbDownAltIcon />
         </IconButton>
       </CardActions>

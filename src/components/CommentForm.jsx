@@ -13,38 +13,38 @@ import SendIcon from "@mui/icons-material/Send";
 import api from "../../api";
 
 function CommentForm({ articleId, onCommentPosted }) {
-  const [commentText, setCommentText] = useState("");
+  const [comment, setComment] = useState("");
   const [username, setUsername] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!commentText.trim() || !username.trim()) {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!comment.trim() || !username.trim()) {
       return;
     }
 
-    setIsLoading(true);
+    setIsSubmitting(true);
     setError(null);
 
     const newComment = {
       article_id: articleId,
       author: username,
-      body: commentText,
+      body: comment,
       votes: 0,
+      created_at: new Date().toISOString(),
     };
 
     try {
       onCommentPosted(newComment);
-      setCommentText("");
+      setComment("");
       setUsername("");
-      await api.postComment(articleId, { username, body: commentText });
+      await api.postComment(articleId, { username, body: comment });
     } catch (err) {
       console.error("Error posting comment:", err);
       setError("Failed to post comment. Please try again.");
-      onCommentPosted(null, newComment);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -71,8 +71,8 @@ function CommentForm({ articleId, onCommentPosted }) {
               minRows={4}
               id="outlined-multiline"
               placeholder="Add a comment"
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
               required
             />
             <IconButton
@@ -85,9 +85,9 @@ function CommentForm({ articleId, onCommentPosted }) {
                 bgcolor: "white",
                 color: "primary.main",
               }}
-              disabled={isLoading}
+              disabled={isSubmitting}
             >
-              {isLoading ? <CircularProgress size={24} /> : <SendIcon />}
+              {isSubmitting ? <CircularProgress size={24} /> : <SendIcon />}
             </IconButton>
           </Box>
         </form>
