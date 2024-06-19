@@ -38,6 +38,7 @@ function ArticlePage({ handleVote, votes }) {
         handleVote={handleVote}
         votes={votes}
         comments={comments}
+        setComments={setComments}
       />
     </Container>
   );

@@ -3,8 +3,8 @@ import CommentCard from "./CommentCard";
 const CommentsSection = ({ comments }) => {
   return (
     <>
-      {comments.map((comment) => (
-        <CommentCard key={comment.comment_id} comment={comment} />
+      {comments.map((comment, index) => (
+        <CommentCard key={`${comment.comment_id}-${index}`} comment={comment} />
       ))}
     </>
   );

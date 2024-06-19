@@ -12,15 +12,30 @@ import {
   Collapse,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CommentsSection from "./CommentsSection";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
+import CommentsSection from "./CommentsSection";
+import CommentForm from "./CommentForm";
 
-function ArticleDetails({ article, votes, handleVote, comments }) {
+function ArticleDetails({
+  article,
+  votes,
+  handleVote,
+  comments,
+  setComments,
+}) {
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const handleCommentPosted = (newComment, revertComment) => {
+    if (newComment) {
+      setComments((prevComments) => [newComment, ...prevComments]);
+    } else if (revertComment) {
+      setComments((prevComments) => prevComments.filter(comment => comment !== revertComment));
+    }
   };
 
   return (
@@ -91,6 +106,7 @@ function ArticleDetails({ article, votes, handleVote, comments }) {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
+              <CommentForm articleId={article.article_id} onCommentPosted={handleCommentPosted} />
               <CommentsSection comments={comments} />
             </CardContent>
           </Collapse>
