@@ -1,7 +1,9 @@
-import ArticleCard from "./ArticleCard";
 import { Container, Grid, Typography } from "@mui/material";
+import ArticleCard from "./ArticleCard";
+import { useLoaderData } from "react-router-dom";
 
-function ArticleList({ articles, votes, handleVote }) {
+function ArticleList() {
+  const articles = useLoaderData();
   return (
     <Container>
       <Typography variant="h3" align="center" gutterBottom>
@@ -12,8 +14,6 @@ function ArticleList({ articles, votes, handleVote }) {
           <Grid item key={article.article_id} xs={12} sm={6} md={4}>
             <ArticleCard
               article={article}
-              votes={votes}
-              handleVote={handleVote}
             />
           </Grid>
         ))}
