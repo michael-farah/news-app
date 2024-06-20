@@ -8,6 +8,7 @@ import {
   fetchArticleById,
   fetchCommentsByArticleId,
 } from "../api";
+import { UserProvider } from "./contexts/UserContext";
 
 const router = createBrowserRouter([
   {
@@ -46,9 +47,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
+    <UserProvider>
       <RouterProvider router={router} />
-    </>
+    </UserProvider>
   );
 }
 
