@@ -4,6 +4,16 @@ const api = axios.create({
   baseURL: "https://news-api-zkr3.onrender.com/api",
 });
 
+export const fetchUsers = async () => {
+  try {
+    const response = await api.get("/users");
+    return response.data;
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    throw err;
+  }
+};
+
 export const fetchArticles = async () => {
   try {
     const response = await api.get("/articles");
@@ -63,6 +73,7 @@ export default {
   fetchArticles,
   fetchArticleById,
   fetchCommentsByArticleId,
+  fetchUsers,
   postComment,
   patchVotes,
 };
