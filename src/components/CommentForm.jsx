@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useUser } from "../contexts/UserContext";
 import {
   Avatar,
   Card,
@@ -8,28 +9,35 @@ import {
   Box,
   IconButton,
   Alert,
+  Typography,
+  Link,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import api from "../../api";
 
 function CommentForm({ articleId, onCommentPosted }) {
+  const { user, setLoginOpen } = useUser();
   const [comment, setComment] = useState("");
-  const [username, setUsername] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  const onLoginClick = () => setLoginOpen(true);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!comment.trim() || !username.trim()) {
+    if (!comment.trim()) {
       return;
     }
-
+    if (!user) {
+      onLoginClick();
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
 
     const newComment = {
       article_id: articleId,
-      author: username,
+      author: user.username,
       body: comment,
       votes: 0,
       created_at: new Date().toISOString(),
@@ -38,8 +46,10 @@ function CommentForm({ articleId, onCommentPosted }) {
     try {
       onCommentPosted(newComment);
       setComment("");
-      setUsername("");
-      await api.postComment(articleId, { username, body: comment });
+      await api.postComment(articleId, {
+        username: user.username,
+        body: comment,
+      });
     } catch (err) {
       console.error("Error posting comment:", err);
       setError("Failed to post comment. Please try again.");
@@ -52,16 +62,42 @@ function CommentForm({ articleId, onCommentPosted }) {
     <Card sx={{ mt: 2 }}>
       <Box sx={{ p: "15px" }}>
         <form onSubmit={handleSubmit}>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar alt={username}>{username.charAt(0).toUpperCase()}</Avatar>
-            <TextField
-              label="Username"
-              variant="outlined"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              sx={{ flex: 1 }}
-            />
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ ml: 0.5 }}
+          >
+            {user ? (
+              <Avatar
+                alt={user.username}
+                src={user.avatar_url}
+                onClick={onLoginClick}
+                style={{ border: "0.1px lightgrey solid" }}
+              />
+            ) : (
+              <Avatar />
+            )}
+            <Typography sx={{ flex: 1 }}>
+              {user ? (
+                <Link
+                  onClick={onLoginClick}
+                  style={{ textDecoration: "none" }}
+                  sx={{ fontWeight: "bold", color: "black" }}
+                >
+                  {user.username}
+                </Link>
+              ) : (
+                <Stack alignItems="center" direction="row" gap={2}>
+                  <Alert severity="info">
+                    <Typography>
+                      Please <Link onClick={onLoginClick}>login</Link> to
+                      comment on this article
+                    </Typography>
+                  </Alert>
+                </Stack>
+              )}
+            </Typography>
           </Stack>
           <Box sx={{ position: "relative", mt: 2 }}>
             <TextField
