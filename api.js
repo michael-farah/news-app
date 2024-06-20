@@ -69,7 +69,17 @@ export const patchVotes = async (articleId, increment) => {
   }
 };
 
+export const deleteComment = async (commentId) => {
+  try {
+    await api.delete(`/comments/${commentId}`);
+  } catch (err) {
+    console.error("Error deleting comment:", err);
+    throw err;
+  }
+};
+
 export default {
+  deleteComment,
   fetchArticles,
   fetchArticleById,
   fetchCommentsByArticleId,
