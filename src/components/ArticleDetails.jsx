@@ -116,7 +116,7 @@ function ArticleDetails() {
                 articleId={article.article_id}
                 onCommentPosted={handleCommentPosted}
               />
-              <CommentsSection comments={comments} />
+              <CommentsSection comments={comments} setComments={setComments} />
             </CardContent>
           </Collapse>
         </Card>
