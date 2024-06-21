@@ -14,10 +14,10 @@ export const fetchUsers = async () => {
   }
 };
 
-export const fetchArticles = async (topic = null) => {
+export const fetchArticles = async (topic = null, sort_by = null, order = null) => {
   try {
     const response = await api.get("/articles", {
-      params: { topic },
+      params: { topic, sort_by, order },   
     });
     return response.data;
   } catch (err) {
