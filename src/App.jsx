@@ -3,6 +3,7 @@ import ArticleDetails from "./components/ArticleDetails";
 import ArticleList from "./components/ArticleList";
 import TopicList from "./components/TopicList";
 import NavBarWrapper from "./components/NavBarWrapper";
+import ErrorPage from "./pages/error-page";
 import {
   fetchArticles,
   fetchArticleById,
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <NavBarWrapper />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
