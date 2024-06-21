@@ -1,12 +1,13 @@
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ArticleDetails from "./components/ArticleDetails";
 import ArticleList from "./components/ArticleList";
+import TopicList from "./components/TopicList";
 import NavBarWrapper from "./components/NavBarWrapper";
 import {
   fetchArticles,
   fetchArticleById,
   fetchCommentsByArticleId,
+  fetchTopics,
 } from "../api";
 import { UserProvider } from "./contexts/UserContext";
 
@@ -39,6 +40,22 @@ const router = createBrowserRouter([
           const article = await fetchArticleById(params.articleId);
           const comments = await fetchCommentsByArticleId(params.articleId);
           return { article, comments };
+        },
+      },
+      {
+        path: "/topics",
+        element: <TopicList />,
+        loader: async () => {
+          const topics = await fetchTopics();
+          return topics;
+        },
+      },
+      {
+        path: "/topic/:slug",
+        element: <ArticleList />,
+        loader: async ({ params }) => {
+          const articles = await fetchArticles(params.slug);
+          return articles;
         },
       },
     ],

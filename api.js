@@ -14,9 +14,11 @@ export const fetchUsers = async () => {
   }
 };
 
-export const fetchArticles = async () => {
+export const fetchArticles = async (topic = null) => {
   try {
-    const response = await api.get("/articles");
+    const response = await api.get("/articles", {
+      params: { topic },
+    });
     return response.data;
   } catch (err) {
     console.error("Error fetching articles:", err);
@@ -78,11 +80,22 @@ export const deleteComment = async (commentId) => {
   }
 };
 
+export const fetchTopics = async () => {
+  try {
+    const response = await api.get("/topics");
+    return response.data;
+  } catch (err) {
+    console.error("Error fetching topics:", err);
+    throw err;
+  }
+};
+
 export default {
   deleteComment,
   fetchArticles,
   fetchArticleById,
   fetchCommentsByArticleId,
+  fetchTopics,
   fetchUsers,
   postComment,
   patchVotes,

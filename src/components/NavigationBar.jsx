@@ -1,3 +1,4 @@
+import { useEffect, useState, useCallback } from "react";
 import { useUser } from "../contexts/UserContext";
 import LoginForm from "./LoginForm";
 import {
@@ -7,22 +8,33 @@ import {
   Avatar,
   IconButton,
   Grid,
+  Button,
+  useMediaQuery,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useMediaQuery } from "@mui/material";
-import { useEffect } from "react";
 import { getUserFromCookie, setUserInCookie } from "../utils/cookieUtils";
+import MobileDrawer from "./MobileDrawer";
 
 function NavigationBar() {
   const { user, loginOpen, setLoginOpen, setUser } = useUser();
-  const handleLoginOpen = () => setLoginOpen(true);
-  const handleLoginClose = () => setLoginOpen(false);
-  const handleLogout = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  const handleLoginOpen = useCallback(() => setLoginOpen(true), [setLoginOpen]);
+  const handleLoginClose = useCallback(
+    () => setLoginOpen(false),
+    [setLoginOpen],
+  );
+  const handleLogout = useCallback(() => {
     setUser(null);
     setUserInCookie(null);
     setLoginOpen(false);
-  };
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  }, [setUser, setUserInCookie, setLoginOpen]);
+
+  const handleDrawerToggle = useCallback(() => {
+    setMobileOpen((prevMobileOpen) => !prevMobileOpen);
+  }, []);
 
   useEffect(() => {
     const savedUser = getUserFromCookie();
@@ -40,6 +52,7 @@ function NavigationBar() {
               edge="start"
               color="inherit"
               aria-label="menu"
+              onClick={handleDrawerToggle}
               sx={{ mr: 2 }}
             >
               <MenuIcon />
@@ -50,6 +63,16 @@ function NavigationBar() {
               News App
             </Typography>
           </Grid>
+          {!isMobile && (
+            <Grid container justifyContent="center">
+              <Button component={Link} to="/articles" color="inherit">
+                Articles
+              </Button>
+              <Button component={Link} to="/topics" color="inherit">
+                Topics
+              </Button>
+            </Grid>
+          )}
           <Grid container justifyContent="flex-end">
             <IconButton onClick={handleLoginOpen}>
               {user ? (
@@ -81,6 +104,10 @@ function NavigationBar() {
           logout={handleLogout}
         />
       </AppBar>
+      <MobileDrawer
+        mobileOpen={mobileOpen}
+        handleDrawerToggle={handleDrawerToggle}
+      />
     </nav>
   );
 }
