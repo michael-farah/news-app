@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLoaderData, useLocation } from "react-router-dom";
+import { useLoaderData, useLocation, Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import api from "../../api";
 import {
@@ -65,7 +65,13 @@ function ArticleDetails() {
             <Typography sx={{ mb: 4 }} variant="h4" textAlign="center">
               {article.title}
             </Typography>
-            <Button sx={{ mb: 1 }} variant="contained" size="small">
+            <Button
+              sx={{ mb: 1 }}
+              variant="contained"
+              size="small"
+              LinkComponent={Link}
+              to={`/topic/${article.topic}`}
+            >
               <Typography variant="body2" color="white">
                 {article.topic}
               </Typography>
