@@ -62,6 +62,7 @@ const CommentCard = ({ comment, setComments }) => {
         title={comment.author}
         subheader={timeSince(comment.created_at)}
         action={
+          user &&
           user.username === comment.author && (
             <CommentMenu comment={comment} handleDelete={handleDelete} />
           )
