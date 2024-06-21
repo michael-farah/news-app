@@ -10,11 +10,14 @@ import {
   Grid,
   Button,
   useMediaQuery,
+  Box,
+  ButtonBase,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { getUserFromCookie, setUserInCookie } from "../utils/cookieUtils";
 import MobileDrawer from "./MobileDrawer";
+import newsLogo from "../assets/news-logo.png";
 
 function NavigationBar() {
   const { user, loginOpen, setLoginOpen, setUser } = useUser();
@@ -59,9 +62,19 @@ function NavigationBar() {
             </IconButton>
           )}
           <Grid container alignItems="center">
-            <Typography variant="h6" color="inherit" noWrap>
-              News App
-            </Typography>
+            <ButtonBase component={Link} to="/">
+              <Box
+                component="img"
+                sx={{
+                  height: 50,
+                  width: 50,
+                  cursor: "pointer",
+                  objectFit: "contain",
+                }}
+                alt="MF News Logo"
+                src={newsLogo}
+              />
+            </ButtonBase>
           </Grid>
           {!isMobile && (
             <Grid container justifyContent="center">
