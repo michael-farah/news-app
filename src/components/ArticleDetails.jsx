@@ -39,8 +39,8 @@ function ArticleDetails() {
     ])
       .then(([articleData, commentsData]) => {
         // API returns { article: {...} } and { comments: [...] }
-        setArticle(articleData.article);
-        setComments(commentsData.comments);
+        setArticle(articleData);
+        setComments(commentsData);
         setLoading(false);
       })
       .catch((err) => {
