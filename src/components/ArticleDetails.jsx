@@ -19,7 +19,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import CommentsSection from "./CommentsSection";
 import CommentForm from "./CommentForm";
-import { fetchArticleById, fetchCommentsByArticleId, patchVotes } from "../../api";
+import {
+  fetchArticleById,
+  fetchCommentsByArticleId,
+  patchVotes,
+} from "../../api";
 
 function ArticleDetails() {
   const { articleId } = useParams();
@@ -45,7 +49,9 @@ function ArticleDetails() {
       })
       .catch((err) => {
         console.error("Error fetching article details:", err);
-        setError("Failed to load article details. The backend API might be down.");
+        setError(
+          "Failed to load article details. The backend API might be down."
+        );
         setLoading(false);
       });
   }, [articleId]);
@@ -73,7 +79,7 @@ function ArticleDetails() {
 
   if (loading) {
     return (
-      <Container sx={{ textAlign: 'center', mt: 4 }}>
+      <Container sx={{ textAlign: "center", mt: 4 }}>
         <CircularProgress />
         <Typography>Loading article...</Typography>
       </Container>
@@ -82,7 +88,7 @@ function ArticleDetails() {
 
   if (error) {
     return (
-      <Container sx={{ textAlign: 'center', mt: 4 }}>
+      <Container sx={{ textAlign: "center", mt: 4 }}>
         <Typography color="error">{error}</Typography>
       </Container>
     );
@@ -90,7 +96,7 @@ function ArticleDetails() {
 
   if (!article) {
     return (
-      <Container sx={{ textAlign: 'center', mt: 4 }}>
+      <Container sx={{ textAlign: "center", mt: 4 }}>
         <Typography>Article not found.</Typography>
       </Container>
     );
@@ -102,39 +108,35 @@ function ArticleDetails() {
       spacing={0}
       direction="column"
       alignItems="center"
-      sx={{ minHeight: "100vh", mr: 2, mt: 2 }}
-    >
+      sx={{ minHeight: "100vh", mr: 2, mt: 2 }}>
       <Grid item xs={3}>
         <Card sx={{ maxWidth: 1000 }}>
           <CardContent>
             <Typography sx={{ mb: 4 }} variant="h4" textAlign="center">
               {article.title}
             </Typography>
-            <Stack alignItems="center" sx={{ mb: 2 }}>
-              <Button
-                sx={{ mb: 1 }}
-                variant="contained"
-                size="small"
-                component={Link}
-                to={`/topic/${article.topic}`}
-              >
-                <Typography variant="body2" color="white">
-                  {article.topic}
-                </Typography>
-              </Button>
-              <CardMedia
-                component="img"
-                height="100%"
-                sx={{ maxWidth: 600 }}
-                image={article.article_img_url}
-                alt={article.title}
-              />
-            </Stack>
+            <Button
+              sx={{ mb: 1 }}
+              variant="contained"
+              size="small"
+              component={Link}
+              to={`/topic/${article.topic}`}>
+              <Typography variant="body2" color="white">
+                {article.topic}
+              </Typography>
+            </Button>
+            <CardMedia
+              component="img"
+              height="100%"
+              sx={{ maxWidth: 600, mb: 2 }}
+              image={article.article_img_url}
+              alt={article.title}
+            />
             <Typography variant="body2" color="text.secondary">
               By {article.author} on{" "}
               {new Date(article.created_at).toLocaleDateString()}
             </Typography>
-            <Typography variant="body1" sx={{mt: 2}}>
+            <Typography variant="body1" sx={{ mt: 2 }}>
               {article.body}
             </Typography>
           </CardContent>
@@ -146,10 +148,16 @@ function ArticleDetails() {
               Comments: {comments.length}
             </Typography>
             <CardActions>
-              <IconButton aria-label="like" onClick={() => handleVote(1)} disabled={voteChange === 1}>
+              <IconButton
+                aria-label="like"
+                onClick={() => handleVote(1)}
+                disabled={voteChange === 1}>
                 <FavoriteIcon />
               </IconButton>
-              <IconButton aria-label="dislike" onClick={() => handleVote(-1)} disabled={voteChange === -1}>
+              <IconButton
+                aria-label="dislike"
+                onClick={() => handleVote(-1)}
+                disabled={voteChange === -1}>
                 <ThumbDownAltIcon />
               </IconButton>
             </CardActions>
@@ -158,10 +166,16 @@ function ArticleDetails() {
             <Button
               onClick={handleExpandClick}
               aria-expanded={expanded}
-              aria-label="show comments"
-            >
-              <ExpandMoreIcon sx={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}/>
-              <Typography sx={{ml: 1}}>{expanded ? "Hide" : "Show"} Comments</Typography>
+              aria-label="show comments">
+              <ExpandMoreIcon
+                sx={{
+                  transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.2s",
+                }}
+              />
+              <Typography sx={{ ml: 1 }}>
+                {expanded ? "Hide" : "Show"} Comments
+              </Typography>
             </Button>
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
