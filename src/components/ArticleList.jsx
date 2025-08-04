@@ -19,7 +19,7 @@ function ArticleList() {
     setError(null);
     fetchArticles(topic, sortBy, order)
       .then((data) => {
-        setArticles(data.articles || []);
+        setArticles(data || []);
         setLoading(false);
       })
       .catch((err) => {
