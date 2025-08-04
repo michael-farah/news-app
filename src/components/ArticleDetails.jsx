@@ -110,24 +110,26 @@ function ArticleDetails() {
             <Typography sx={{ mb: 4 }} variant="h4" textAlign="center">
               {article.title}
             </Typography>
-            <Button
-              sx={{ mb: 1 }}
-              variant="contained"
-              size="small"
-              component={Link}
-              to={`/topic/${article.topic}`}
-            >
-              <Typography variant="body2" color="white">
-                {article.topic}
-              </Typography>
-            </Button>
-            <CardMedia
-              component="img"
-              height="100%"
-              sx={{ maxWidth: 600, mb: 2 }}
-              image={article.article_img_url}
-              alt={article.title}
-            />
+            <Stack alignItems="center" sx={{ mb: 2 }}>
+              <Button
+                sx={{ mb: 1 }}
+                variant="contained"
+                size="small"
+                component={Link}
+                to={`/topic/${article.topic}`}
+              >
+                <Typography variant="body2" color="white">
+                  {article.topic}
+                </Typography>
+              </Button>
+              <CardMedia
+                component="img"
+                height="100%"
+                sx={{ maxWidth: 600 }}
+                image={article.article_img_url}
+                alt={article.title}
+              />
+            </Stack>
             <Typography variant="body2" color="text.secondary">
               By {article.author} on{" "}
               {new Date(article.created_at).toLocaleDateString()}
