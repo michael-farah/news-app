@@ -14,12 +14,14 @@
   </tr>
 </table>
 
-## 🌍 Live Demo
+## 🌍 Live Demos
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/1be38953-9109-47ae-9166-72c0e76700ce/deploy-status)](https://app.netlify.com/sites/mf-news/deploys)
+[![Firebase Deploy](https://img.shields.io/badge/Firebase-Hosting-yellow?logo=firebase)](https://mf-news-app.web.app/)
 
-Check out the live version of MF News, where you can browse and interact with sample articles:
-[**MF News Live Demo**](https://mf-news.netlify.app/)
+Check out the live versions of MF News, where you can browse and interact with sample articles:
+- [**Netlify Demo**](https://mf-news.netlify.app/)
+- [**Firebase Demo**](https://mf-news-app.web.app/)
 
 ## 📚 Overview
 
@@ -56,14 +58,16 @@ To run MF News locally, follow these steps:
 
 3. **Install Dependencies**
 
+   Use pnpm to install the project dependencies:
+
    ```bash
-   npm install
+   pnpm install
    ```
 
 4. **Start the Development Server**
 
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 Your local instance of MF News will be available at `http://localhost:5173`.
