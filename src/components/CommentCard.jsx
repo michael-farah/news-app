@@ -13,8 +13,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../contexts/UserContext";
 import CommentMenu from "./CommentMenu";
 
-const CommentCard = ({ comment, setComments }) => {
-  const [userDetails, setUserDetails] = useState(null);
+const CommentCard = ({ comment, setComments, users }) => {
   const [commentError, setCommentError] = useState(null);
   const [showError, setShowError] = useState(false);
   const { user } = useUser();
@@ -22,7 +21,7 @@ const CommentCard = ({ comment, setComments }) => {
   const handleDelete = async () => {
     try {
       setComments((prevComments) =>
-        prevComments.filter((currentComment) => currentComment !== comment),
+        prevComments.filter((currentComment) => currentComment !== comment)
       );
       await api.deleteComment(comment.comment_id);
     } catch (err) {
@@ -33,20 +32,10 @@ const CommentCard = ({ comment, setComments }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const users = await api.fetchUsers();
-      const userDetails = users.find(
-        (user) => user.username === comment.author,
-      );
-      setUserDetails(userDetails);
-    };
-
-    fetchUserDetails();
-  }, [comment.author]);
+  const userDetails = users.find((user) => user.username === comment.author);
 
   return (
-    <Card>
+    <Card sx={{ opacity: comment.isOptimistic ? 0.5 : 1 }}>
       <CardHeader
         avatar={
           userDetails ? (

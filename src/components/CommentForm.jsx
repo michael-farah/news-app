@@ -15,7 +15,7 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import api from "../../api";
 
-function CommentForm({ articleId, onCommentPosted }) {
+function CommentForm({ articleId, onCommentPosted, onPostSuccess }) {
   const { user, setLoginOpen } = useUser();
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,21 +35,23 @@ function CommentForm({ articleId, onCommentPosted }) {
     setIsSubmitting(true);
     setError(null);
 
-    const newComment = {
+    const optimisticComment = {
       article_id: articleId,
       author: user.username,
       body: comment,
       votes: 0,
       created_at: new Date().toISOString(),
+      isOptimistic: true,
     };
+    onCommentPosted(optimisticComment);
+    setComment("");
 
     try {
-      onCommentPosted(newComment);
-      setComment("");
       await api.postComment(articleId, {
         username: user.username,
         body: comment,
       });
+      onPostSuccess();
     } catch (err) {
       console.error("Error posting comment:", err);
       setError("Failed to post comment. Please try again.");

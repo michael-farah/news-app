@@ -22,6 +22,7 @@ import CommentForm from "./CommentForm";
 import {
   fetchArticleById,
   fetchCommentsByArticleId,
+  fetchUsers,
   patchVotes,
 } from "../../api";
 
@@ -29,6 +30,7 @@ function ArticleDetails() {
   const { articleId } = useParams();
   const [article, setArticle] = useState(null);
   const [comments, setComments] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expanded, setExpanded] = useState(false);
@@ -40,11 +42,13 @@ function ArticleDetails() {
     Promise.all([
       fetchArticleById(articleId),
       fetchCommentsByArticleId(articleId),
+      fetchUsers(),
     ])
-      .then(([articleData, commentsData]) => {
+      .then(([articleData, commentsData, usersData]) => {
         // API returns { article: {...} } and { comments: [...] }
         setArticle(articleData);
         setComments(commentsData);
+        setUsers(usersData);
         setLoading(false);
       })
       .catch((err) => {
@@ -67,10 +71,14 @@ function ArticleDetails() {
     }
   };
 
-  const handleCommentPosted = (newComment) => {
-    if (newComment) {
-      setComments((prevComments) => [newComment.comment, ...prevComments]);
-    }
+  const handleCommentPosted = (optimisticComment) => {
+    setComments((prevComments) => [optimisticComment, ...prevComments]);
+  };
+
+  const handlePostSuccess = () => {
+    fetchCommentsByArticleId(articleId).then((commentsData) => {
+      setComments(commentsData);
+    });
   };
 
   const handleExpandClick = () => {
@@ -115,23 +123,25 @@ function ArticleDetails() {
             <Typography sx={{ mb: 4 }} variant="h4" textAlign="center">
               {article.title}
             </Typography>
-            <Button
-              sx={{ mb: 1 }}
-              variant="contained"
-              size="small"
-              component={Link}
-              to={`/topic/${article.topic}`}>
-              <Typography variant="body2" color="white">
-                {article.topic}
-              </Typography>
-            </Button>
-            <CardMedia
-              component="img"
-              height="100%"
-              sx={{ maxWidth: 600, mb: 2 }}
-              image={article.article_img_url}
-              alt={article.title}
-            />
+            <Stack alignItems="center" sx={{ mb: 2 }}>
+              <Button
+                sx={{ mb: 1 }}
+                variant="contained"
+                size="small"
+                component={Link}
+                to={`/topic/${article.topic}`}>
+                <Typography variant="body2" color="white">
+                  {article.topic}
+                </Typography>
+              </Button>
+              <CardMedia
+                component="img"
+                height="100%"
+                sx={{ maxWidth: 600 }}
+                image={article.article_img_url}
+                alt={article.title}
+              />
+            </Stack>
             <Typography variant="body2" color="text.secondary">
               By {article.author} on{" "}
               {new Date(article.created_at).toLocaleDateString()}
@@ -183,8 +193,13 @@ function ArticleDetails() {
               <CommentForm
                 articleId={article.article_id}
                 onCommentPosted={handleCommentPosted}
+                onPostSuccess={handlePostSuccess}
               />
-              <CommentsSection comments={comments} setComments={setComments} />
+              <CommentsSection
+                comments={comments}
+                setComments={setComments}
+                users={users}
+              />
             </CardContent>
           </Collapse>
         </Card>
